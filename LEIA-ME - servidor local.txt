@@ -1,0 +1,370 @@
+CRM GESTOR — ATALHO COM SERVIDOR LOCAL
+======================================
+
+O QUE MUDOU
+-----------
+O atalho "CRM GESTOR" (com o ícone do cubo, aqui nesta pasta) abre o
+sistema por http://localhost:4590/ em vez de abrir o arquivo direto do
+disco. Pode copiar o atalho para a área de trabalho: ele continua
+apontando para esta pasta.
+
+Desde a versão 8.13 o arquivo do sistema se chama index.html (antes,
+CRM_GESTOR.html). Os dados não mudam com isso: o navegador guarda tudo
+pelo endereço, não pelo nome do arquivo. Favorito salvo no endereço
+antigo (.../CRM_GESTOR.html) deixa de abrir — use o atalho.
+
+Por que isso importa: quando o sistema é aberto por duplo-clique no
+arquivo (endereço file://), o Chrome bloqueia o banco de dados por
+regra de segurança. O sistema cai no "modo compatível", com teto de
+cerca de 5 MB — algo em torno de 5.000 vendas. Servido por localhost,
+o banco completo fica disponível: cerca de 5,7 GB.
+
+Um segundo ganho: por localhost o navegador confirma de verdade quando
+um backup foi salvo. Por file:// o sistema só consegue dizer que o
+download começou.
+
+
+REDE DA LOJA — ABRIR NO CELULAR E NO OUTRO COMPUTADOR
+-----------------------------------------------------
+Desde 12/10/2026 (etapa 1 de 5) o servidor também atende os outros
+aparelhos da loja — o segundo computador e o celular — ligados na mesma
+rede (Wi-Fi) do roteador da loja. Só dentro da loja: de fora não entra.
+
+  ENDEREÇO DE ACESSO (hoje):   http://192.168.1.68:4590/
+
+Neste computador continua sendo http://localhost:4590/ (o atalho).
+O endereço da rede também aparece na página "Aparelhos da loja" e na
+janela preta do servidor. Ele muda se o roteador der outro IP a este
+computador — por isso, fixe o IP (seção "Fixar o IP", abaixo).
+
+OS DADOS: LEVAR PARA O SERVIDOR (uma vez só, desde a versão 8.16)
+  Enquanto os dados não forem levados para o servidor, cada aparelho
+  guarda os próprios dados no próprio navegador: o celular abre vazio,
+  e o que for lançado nele não aparece aqui. Não lance vendas nele.
+
+  Para levar (no computador principal, como administrador):
+    1. Escolha um momento calmo, com a loja sem movimento. Feche o
+       sistema nos outros aparelhos e nas outras abas.
+    2. Abra o CRM GESTOR pelo atalho (assim entra o servidor novo).
+    3. Barra lateral -> Banco de Dados -> cartão "Levar os dados para o
+       servidor da loja".
+    4. "Salvar um backup agora" (o botão de levar só libera com um
+       backup desta última hora). Guarde o arquivo.
+    5. "Levar os dados para o servidor". O sistema envia tudo (registros,
+       usuários com as senhas cifradas e numeração), confere registro por
+       registro e recarrega. Se algo não bater, nada muda.
+    6. Entre com o mesmo usuário e senha de sempre.
+    7. Nos outros aparelhos, feche e abra o sistema: eles pedem para
+       entrar com os usuários de sempre e mostram os mesmos dados.
+
+  Daí em diante, o que um aparelho faz aparece nos outros em cerca de
+  um segundo. Sem conexão, aparece uma faixa vermelha: o aparelho
+  guarda o que fizer e envia quando a conexão voltar.
+
+  VOLTAR ATRÁS OU CONFIRMAR
+  A cópia de antes da mudança continua guardada no navegador do
+  computador principal, sem mudar. No mesmo cartão de Banco de Dados:
+    - "Está tudo certo — apagar a cópia antiga": depois de uns dias de
+      uso sem problema. Os dados do servidor não mudam.
+    - "Voltar ao banco deste navegador": só se algo der errado. O que
+      foi lançado depois da mudança fica só no servidor e não volta;
+      salve um backup antes.
+
+UMA VEZ SÓ: LIBERAR A REDE NO WINDOWS
+  Dê dois cliques em "Liberar rede da loja (administrador).bat" e
+  confirme a pergunta do Windows. Ele:
+    1. marca a rede deste computador como Privada (estava Pública);
+    2. cria a regra de firewall "CRM GESTOR - rede da loja (porta
+       4590)": só a porta 4590, só o Python, só rede Privada e só
+       aparelhos da mesma rede local;
+    3. desliga as duas regras antigas "Python" da rede Pública, que
+       liberavam qualquer porta do Python (desligadas, não apagadas).
+  Rode de novo se o Python for atualizado (pasta nova) ou se o
+  roteador for trocado.
+  Com a rede Privada, este computador passa a aparecer na lista de rede
+  dos outros aparelhos (Descoberta de Rede). Arquivos e impressoras
+  continuam fechados.
+
+LIBERAR UM APARELHO (uma vez por aparelho)
+  Os clientes usam a mesma Wi-Fi, então o servidor só atende aparelho
+  liberado. Aparelho desconhecido vê só a tela "Liberar este aparelho".
+    1. Neste computador, com o CRM GESTOR aberto, dê dois cliques em
+       "Aparelhos da loja" (ou digite localhost:4590/aparelhos no
+       navegador) e clique em Gerar código.
+    2. No celular, na Wi-Fi da loja, abra http://192.168.1.68:4590/
+    3. Digite o código de 6 números e um nome (ex.: Celular do caixa).
+  Cada código libera um aparelho só, vale 10 minutos e é cancelado
+  depois de 5 tentativas erradas. A página "Aparelhos da loja" só abre
+  neste computador.
+  Remover: na mesma página, botão Remover. O aparelho para de abrir na
+  hora. Use quando um celular for perdido ou trocado, ou quando alguém
+  sair da equipe.
+  Limpar os dados do navegador do celular (ou usar aba anônima) apaga a
+  liberação daquele aparelho: é só liberar de novo.
+
+FIXAR O IP DESTE COMPUTADOR NO ROTEADOR
+  O roteador (GPON Home Gateway, em 192.168.1.254) entrega o IP
+  automaticamente e pode trocá-lo. Se trocar, o endereço muda e cada
+  aparelho precisa ser liberado de novo. Para fixar:
+    1. No navegador deste computador, abra http://192.168.1.254
+       (usuário e senha costumam estar na etiqueta do roteador).
+    2. Procure o menu LAN, DHCP ou Rede local e, nele, "Reserva de
+       endereço", "DHCP estático", "Static lease" ou "Address
+       Reservation".
+    3. Reserve o IP 192.168.1.68 para o endereço MAC
+       3C-7C-3F-79-29-32 (placa Ethernet Realtek deste computador).
+    4. Salve. No Windows não precisa mexer em nada.
+  Com a marca e o modelo da etiqueta dá para achar o passo a passo
+  exato, se o menu for diferente.
+
+RECOMENDADO: REDE DE CONVIDADOS PARA OS CLIENTES
+  O mais seguro é os clientes usarem uma rede de convidados (Wi-Fi
+  "visitante"), separada da rede da equipe; a maioria dos roteadores
+  de fibra tem essa opção. Enquanto clientes e equipe dividirem a mesma
+  Wi-Fi, o código de liberação protege o acesso, mas o que passa pela
+  rede local não é cifrado (o endereço é http, não https) — inclusive a
+  senha digitada para entrar no celular ou no outro computador.
+
+O QUE A REDE ENXERGA
+  Só o sistema (index.html) e as pastas imagens/ e ferramentas/.
+  backup/ (que tem cópias com dados de clientes), documentação/, os
+  .bat, os atalhos e a pasta servidor/ nunca são entregues, nem para
+  aparelho liberado.
+
+BANCO DO SERVIDOR
+  C:\CRM GESTOR\dados\crm_gestor.db (mais os arquivos -wal e -shm)
+  Fica fora do OneDrive de propósito: a sincronização pode corromper um
+  banco SQLite aberto. Guarda a lista de aparelhos liberados e, depois
+  que os dados são levados para o servidor (seção acima), os dados do
+  sistema (clientes, vendas, estoque, numeração) e os usuários — com
+  as senhas cifradas guardadas só nele. A entrada, a autorização de
+  supervisor e a troca de senha passam a ser conferidas por ele.
+  Não copie nem mova esses arquivos com o servidor aberto.
+  Para trocar a pasta, edite a linha "set DADOS=" em
+  "Abrir CRM GESTOR.bat".
+  Backup: o "Exportar Backup" de sempre continua valendo (mas, com os
+  dados no servidor, vai sem as senhas, que ficam só nele). Os anexos
+  dos documentos ficam em C:\CRM GESTOR\dados\anexos e só saem no
+  "Backup com anexos (.zip)" (tela Banco de Dados). Além disso, o
+  servidor faz sozinho a cópia diária (seção abaixo).
+
+CÓPIA DIÁRIA DO SERVIDOR (desde a versão 8.35, etapa 5 de 5)
+  Com os dados no servidor, ele mesmo copia o banco e os anexos uma vez
+  por dia, sem ninguém fazer nada:
+    - quando: uns segundos depois de abrir, no primeiro uso do dia; se
+      o servidor passa a noite ligado, logo depois da meia-noite;
+    - onde: C:\CRM GESTOR\dados\backups (no pen drive, dados\backups),
+      um arquivo por dia, crm_gestor_AAAA-MM-DD.db;
+    - quantas: as 14 últimas e a última de cada um dos 12 meses
+      anteriores (até 26). As mais velhas são apagadas sozinhas; outros
+      arquivos da pasta nunca são mexidos;
+    - anexos: vão para backups\anexos, só os novos (cada arquivo é
+      copiado uma vez). Um anexo excluído continua lá enquanto alguma
+      cópia guardada o usar.
+  A cópia usa a API de backup do SQLite (pode ser feita com o sistema em
+  uso) e é conferida antes de ganhar o nome final. Se falhar, a janela
+  preta avisa e o servidor tenta de novo em 1 hora. A tela Banco de
+  Dados mostra a última cópia (cartão "Cópia diária do servidor"), e a
+  Saúde do sistema avisa se ela falhar. No computador principal, o
+  administrador tem ali "Fazer uma cópia agora" (substitui a de hoje).
+  A pasta backups fica no mesmo disco do banco: protege de banco
+  estragado, exclusão e importação errada, não de defeito no disco.
+  Guarde de vez em quando um "Backup com anexos (.zip)" fora daqui.
+
+EMERGÊNCIA: VOLTAR A UMA CÓPIA DIÁRIA
+  O banco inteiro volta a ser o daquele dia: o que foi lançado depois,
+  em qualquer aparelho, deixa de valer. Neste computador:
+    1. Feche o sistema nos aparelhos e feche o CRM GESTOR (a janela
+       preta do servidor, ou "Parar servidor CRM GESTOR.bat").
+    2. Abra o Prompt de Comando nesta pasta e rode:
+         python servidor\servidor_crm_gestor.py --restaurar-copia
+       Ele lista as cópias guardadas, com os registros e a última
+       alteração de cada uma.
+    3. Rode de novo com a data escolhida, por exemplo:
+         python servidor\servidor_crm_gestor.py --restaurar-copia 2026-10-19
+       Confira o resumo e digite SIM.
+    4. Abra o CRM GESTOR pelo atalho e entre de novo.
+  O banco de antes fica em C:\CRM GESTOR\dados\anteriores (as 10
+  últimas trocas). Usuários e senhas voltam a ser os da cópia; os
+  aparelhos liberados continuam os de agora; os anexos que a cópia usa
+  voltam do espelho.
+  No pen drive: use servidor\python\python.exe no lugar de python e
+  acrescente --dados dados (rodando de dentro da pasta no pen drive).
+
+EMERGÊNCIA: O ÚNICO ADMINISTRADOR ESQUECEU A SENHA
+  Com os dados no servidor, a senha só pode ser trocada nele. Neste
+  computador:
+    1. Feche o CRM GESTOR (a janela preta do servidor).
+    2. Abra o Prompt de Comando nesta pasta e rode:
+         python servidor\servidor_crm_gestor.py --redefinir-senha LOGIN
+       (troque LOGIN pelo usuário). Ele pede a senha nova duas vezes,
+       sem mostrar na tela, e deixa o usuário ativo.
+    3. Abra o CRM GESTOR pelo atalho e entre com a senha nova.
+  Para evitar isso, mantenha dois administradores.
+
+SE O CELULAR NÃO ABRIR
+  - O celular está na Wi-Fi da loja (e não nos dados móveis)?
+  - O CRM GESTOR está aberto neste computador (janela preta do
+    servidor)? Computador desligado = sistema fora do ar para os outros.
+  - O endereço é o que aparece em "Aparelhos da loja"? O IP pode ter
+    mudado.
+  - "Liberar rede da loja (administrador).bat" já foi rodado?
+  - Alguns roteadores isolam os aparelhos da Wi-Fi ("isolamento de AP",
+    "AP isolation"). Se for o caso, desligue essa opção na rede da equipe.
+
+DESFAZER A LIBERAÇÃO DA REDE
+  Em "Windows Defender Firewall com Segurança Avançada" -> Regras de
+  Entrada: apague "CRM GESTOR - rede da loja (porta 4590)" e, se
+  quiser, habilite de novo as regras "Python". Para a rede voltar a
+  Pública: Configurações -> Rede e Internet -> Ethernet -> Tipo de
+  perfil de rede -> Pública.
+
+
+PEN DRIVE OU HD EXTERNO — LEVAR O SISTEMA PARA OUTRO COMPUTADOR
+---------------------------------------------------------------
+Desde 14/10/2026 (versão 8.19) a pasta inteira do sistema pode ser
+copiada para um pen drive ou HD externo e aberta em qualquer computador
+com Windows 10 ou 11 (64 bits), mesmo sem Python: ele vem junto, na
+pasta servidor\python.
+
+Aberto pelo pen drive, o "Abrir CRM GESTOR.bat" percebe sozinho que a
+pasta está num disco removível ou ligado por USB e:
+  - guarda os dados DENTRO da pasta, em "dados" (ao lado do index.html),
+    e não em C:\CRM GESTOR\dados: os dados andam com o pen drive;
+  - usa o Python que vem junto;
+  - só atende o computador onde o pen drive está (127.0.0.1): celular e
+    outros aparelhos não entram, e o Windows não pede para liberar o
+    firewall num computador que não é o da loja.
+O rodapé e o Banco de Dados mostram "Pen drive".
+Passo a passo com as telas: "Guia - Pen drive ou HD externo (passo a
+passo).pdf", na pasta documentação.
+
+LEVAR (no computador principal)
+  1. Copie a pasta inteira do sistema e cole no pen drive.
+  2. No pen drive, dois cliques em "Abrir CRM GESTOR.bat".
+  3. Na primeira vez, ele pergunta se leva uma cópia dos dados deste
+     computador: responda S. Os dados daqui continuam aqui, sem mudar.
+  Use sempre o "Abrir CRM GESTOR.bat" de dentro da pasta no pen drive:
+  o atalho "CRM GESTOR" (cubo) aponta para a pasta deste computador.
+
+TIRAR O PEN DRIVE
+  Feche o sistema no navegador, feche a janela preta do servidor (ou
+  rode "Parar servidor CRM GESTOR.bat") e use "Remover hardware com
+  segurança" do Windows. Tirar com o servidor aberto pode estragar o
+  banco do pen drive.
+
+TRAZER DE VOLTA O QUE FOI LANÇADO FORA
+  O pen drive e este computador têm cada um os seus dados. Para igualar:
+  dois cliques em "Pen drive - levar ou trazer os dados.bat", DENTRO da
+  pasta no pen drive, com o pen drive ligado neste computador. Ele mostra
+  os dois lados (registros e última alteração) e pergunta:
+    1 = levar os dados deste computador para o pen drive
+    2 = trazer os dados do pen drive para este computador
+  Confirme digitando SIM. A troca SUBSTITUI, não soma: o lado que recebe
+  fica igual ao outro. Antes, ela guarda o banco substituído em
+  "anteriores" (junto do banco que recebeu; as 10 últimas cópias) e
+  fecha o servidor, se estiver aberto. Os aparelhos liberados da rede da
+  loja continuam os deste computador.
+
+OUTRO COMPUTADOR, PEN DRIVE SEM DADOS
+  O "Abrir CRM GESTOR.bat" oferece começar um sistema vazio no pen
+  drive (cria-se o administrador na tela de entrada). Os dados da loja
+  podem entrar depois por Importar Backup.
+
+CUIDADOS
+  - O pen drive leva os dados dos clientes (e a pasta backup/, se for
+    junto). Perdido, quem achar consegue ler.
+  - O navegador do outro computador não fica com os dados: só pequenas
+    preferências (tema, tamanho do texto).
+  - Disco que não seja reconhecido como pen drive (ex.: HD externo por
+    eSATA/Thunderbolt) abre como se fosse o computador principal. Para
+    forçar: no Prompt de Comando, "set CRM_GESTOR_PEN_DRIVE=1" e rode o
+    .bat pela mesma janela (=0 força o contrário).
+  - O Python que vem junto (servidor\python, ~22 MB) é montado a partir
+    do Python deste computador por servidor\montar_python_portatil.py.
+    Depois de atualizar o Python daqui, rode:
+         python servidor\montar_python_portatil.py
+
+
+ATENÇÃO — OS DADOS NÃO VÃO SOZINHOS
+------------------------------------
+O navegador guarda os dados separados por endereço. O que está hoje em
+file:// NÃO aparece em localhost — são armazenamentos diferentes.
+
+Ao abrir por localhost pela primeira vez você vai encontrar o sistema
+vazio, pedindo para criar o administrador. Isso é esperado.
+
+A ordem correta para migrar:
+
+  1. Abra o sistema como antes (duplo-clique em index.html)
+  2. Barra lateral -> Exportar Backup -> guarde o arquivo .json
+  3. Use o atalho "CRM GESTOR" desta pasta
+  4. Crie o administrador novamente
+  5. Barra lateral -> Importar Backup -> escolha o .json do passo 2
+
+A partir daí os dados vivem no banco completo.
+Confira em: Sistema -> Banco de Dados -> cartão MOTOR.
+Deve dizer "IndexedDB". Se disser "Modo compatível", você ainda está
+abrindo pelo arquivo.
+
+
+COMO USAR NO DIA A DIA
+----------------------
+Abrir:   duplo-clique no atalho "CRM GESTOR" desta pasta.
+         O Chrome abre numa janela nova, já maximizada.
+         Uma janela preta minimizada chamada
+         "CRM GESTOR - servidor (nao feche esta janela)" fica aberta.
+         Ela é o servidor. Deixe quieta enquanto estiver usando.
+         Nela aparecem os endereços e quem acessou.
+
+Fechar:  feche a janela do servidor,
+         ou rode "Parar servidor CRM GESTOR.bat" nesta pasta.
+         Os outros aparelhos da loja param junto.
+
+Clicar no atalho com o servidor já no ar não abre um segundo
+servidor — apenas abre o navegador de novo.
+
+VÁRIAS VERSÕES (v.05, v.06, v.07...)
+Todas usam a mesma porta 4590, de propósito: assim enxergam o mesmo
+banco de dados no navegador. O atalho confere se o servidor no ar é
+desta pasta. Se for de outra versão, ele é trocado pelo desta pasta
+automaticamente (a janela preta antiga fecha e abre uma nova).
+Programa que não seja o servidor do CRM GESTOR nunca é derrubado.
+
+
+REQUISITOS
+----------
+Python (já instalado neste computador: 3.14).
+Sem ele, o atalho usa o que vem junto na pasta servidor\python. Se
+nenhum dos dois existir, o atalho avisa e explica o que fazer. O
+sistema continua funcionando pelo arquivo, como antes, só que com o
+teto de 5 MB.
+
+
+ARQUIVOS DESTA PASTA
+--------------------
+index.html                     o sistema (até a v8.12, CRM_GESTOR.html)
+CRM GESTOR (atalho)            clique duplo aqui para abrir o sistema
+Abrir CRM GESTOR.bat           sobe o servidor e abre o Chrome
+Parar servidor CRM GESTOR.bat  encerra o servidor
+Liberar rede da loja (administrador).bat
+                               libera a porta no firewall (uma vez só)
+Aparelhos da loja (atalho)     libera e remove aparelhos (só abre aqui)
+Pen drive - levar ou trazer os dados.bat
+                               copia os dados entre o pen drive e este
+                               computador (rodar de dentro do pen drive)
+servidor/                      o servidor (servidor_crm_gestor.py), as
+                               telas de liberação, o script do firewall,
+                               o pen_drive.py e o Python que vem junto
+                               (servidor/python)
+dados/                         só no pen drive: o banco que anda com ele
+                               (com anexos/, backups/ e anteriores/)
+crm_gestor.ico                 ícone do atalho (o cubo da logo)
+favicon.ico                    ícone da aba do navegador
+backup/                        cópias anteriores do sistema
+documentação/                  documentação do CRM GESTOR e os guias
+                               ilustrados em PDF (Rede da loja; Pen drive
+                               ou HD externo)
+
+A porta usada é a 4590. Para trocar, edite a linha "set PORTA=4590"
+nos quatro arquivos .bat e o endereço no atalho "Aparelhos da loja".
